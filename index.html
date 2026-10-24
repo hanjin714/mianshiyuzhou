@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>面试宇宙 / INTERVIEWVERSE — 悖论矩阵</title>
+<link rel="stylesheet" href="./styles.css" />
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.js" } }
+</script>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+
+<!-- ============ 启动屏 ============ -->
+<section id="boot" class="screen active">
+  <div class="boot-grid"></div>
+  <div class="boot-scan"></div>
+
+  <header class="boot-top">
+    <div class="brand">
+      <span class="brand-mark">◇</span>
+      <span class="brand-name">悖论矩阵</span>
+      <span class="brand-sub">PARADOX MATRIX / INTERVIEWVERSE</span>
+    </div>
+    <div class="boot-top-right">
+      <button id="bootSettings" class="ghost-btn" type="button">LLM 接入</button>
+      <span class="build-tag">BUILD 0.9.7</span>
+    </div>
+  </header>
+
+  <main class="boot-main">
+    <div class="boot-title-wrap">
+      <div class="boot-kicker">// CANDIDATE TERMINAL 2077</div>
+      <h1 class="boot-title" aria-label="面试宇宙">
+        <span>面</span><span>试</span><span>宇</span><span>宙</span>
+      </h1>
+      <div class="boot-title-en">INTERVIEW<span class="accent">VERSE</span></div>
+    </div>
+
+    <div class="boot-console">
+      <div class="console-head">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="console-title">uplink --candidate /dev/null</span>
+      </div>
+      <div class="console-body" id="bootLog"></div>
+      <div class="boot-cta">
+        <button id="startBtn" class="primary-btn" type="button" disabled>
+          <span class="btn-index">01</span>
+          <span class="btn-text">随机传送 · 开始面试</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        <p class="boot-note">3 个世界 · 9 位面试官 · 全程 AI 实时出题 · 结局开放</p>
+        <div class="boot-worlds">
+          <span class="world-chip"><i></i>空岛纪元 / ILMANGO</span>
+          <span class="world-chip"><i></i>云端教室 / LUMEN</span>
+          <span class="world-chip"><i></i>智能住宅 / NEST-9</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="boot-footer">
+    <div class="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
+    <div class="boot-meta">
+      <span>WASD 移动</span><span>SHIFT 疾跑</span><span>E 交互</span><span>ESC 释放鼠标</span>
+    </div>
+  </footer>
+</section>
+
+<!-- ============ HUD ============ -->
+<div id="hud" class="hidden">
+  <div class="hud-frame">
+    <div class="hud-corner tl"></div><div class="hud-corner tr"></div>
+    <div class="hud-corner bl"></div><div class="hud-corner br"></div>
+  </div>
+
+  <header class="hud-top">
+    <div class="hud-brand">
+      <span class="brand-mark small">◇</span>
+      <div>
+        <div class="hud-brand-name">面试宇宙</div>
+        <div class="hud-brand-sub">INTERVIEWVERSE</div>
+      </div>
+    </div>
+
+    <div class="sector-block">
+      <div class="sector-line">
+        <span id="sectorCode">SECTOR 01</span>
+        <span class="sector-sep">/</span>
+        <span id="sectorWorld">空岛纪元</span>
+      </div>
+      <div class="sector-progress">
+        <span id="npcProgress">已面试 0 / 3</span>
+        <div class="pip-row" id="pipRow"><i></i><i></i><i></i></div>
+      </div>
+    </div>
+
+    <div class="hud-status">
+      <div id="aiBadge" class="ai-badge"><span class="ai-dot"></span><span id="aiBadgeText">LOCAL ENGINE</span></div>
+      <button id="hudSettings" class="icon-btn" type="button" title="LLM 接入">⚙</button>
+    </div>
+  </header>
+
+  <div id="crosshair" class="crosshair"><span></span><span></span></div>
+
+  <div id="lockHint" class="lock-hint hidden"><i></i>点击画面 · 锁定视角</div>
+
+  <div id="interact" class="interact hidden">
+    <span class="key">E</span>
+    <span id="interactText">与面试官对话</span>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <div id="worldTitle" class="world-title">
+    <div class="world-title-kicker">// TELEPORT LOCKED</div>
+    <div class="world-title-main" id="worldTitleMain"></div>
+    <div class="world-title-sub" id="worldTitleSub"></div>
+  </div>
+
+  <aside class="radar-wrap">
+    <div class="radar-head"><span>SCENE RADAR</span><span id="radarCoord">X 0 · Z 0</span></div>
+    <canvas id="radar" width="200" height="200"></canvas>
+    <div class="radar-foot"><span class="legend"><i class="lg-npc"></i>面试官</span><span class="legend"><i class="lg-portal"></i>传送门</span></div>
+  </aside>
+
+  <div class="hud-bottom">
+    <div class="keybar">
+      <span><b>W A S D</b> 移动</span>
+      <span><b>SHIFT</b> 疾跑</span>
+      <span><b>E</b> 交互</span>
+      <span><b>ESC</b> 鼠标</span>
+    </div>
+    <div class="candidate-id">
+      <span>CANDIDATE</span>
+      <b id="candidateCode">#0000</b>
+    </div>
+  </div>
+
+  <div class="vignette"></div>
+</div>
+
+<!-- ============ 对话 / 面试面板 ============ -->
+<section id="dialogue" class="dialogue hidden">
+  <div class="dlg-shell">
+    <div class="dlg-head">
+      <div class="dlg-identity">
+        <div class="dlg-avatar" id="dlgAvatar">林</div>
+        <div>
+          <div class="dlg-name" id="dlgName">面试官</div>
+          <div class="dlg-role" id="dlgRole">ROLE</div>
+        </div>
+      </div>
+      <div class="dlg-meta">
+        <span id="dlgRound">QUESTION 01 / 02</span>
+        <span class="dlg-online"><i></i>LIVE</span>
+      </div>
+    </div>
+
+    <div class="dlg-body">
+      <div id="dlgLoading" class="dlg-loading">
+        <span class="load-bars"><i></i><i></i><i></i><i></i></span>
+        <span id="dlgLoadingText">面试官正在根据你的世界线生成题目…</span>
+      </div>
+
+      <div id="dlgQuestion" class="dlg-question"></div>
+      <div id="dlgOptions" class="dlg-options"></div>
+      <div id="dlgFeedback" class="dlg-feedback hidden"></div>
+    </div>
+
+    <div class="dlg-foot">
+      <span id="dlgHint">按 1 – 4 选择，或点击选项</span>
+      <span class="dlg-tag" id="dlgSource">LOCAL ENGINE</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 传送过场 ============ -->
+<div id="transition" class="transition hidden">
+  <div class="tr-bars"></div>
+  <div class="tr-content">
+    <div class="tr-kicker" id="trKicker">// RECALIBRATING SPACETIME</div>
+    <div class="tr-title" id="trTitle">SECTOR 02</div>
+    <div class="tr-sub" id="trSub">云端教室</div>
+    <div class="tr-bar"><i></i></div>
+    <div class="tr-tip" id="trTip"></div>
+  </div>
+</div>
+
+<!-- ============ 结局 / 面经 ============ -->
+<section id="report" class="report hidden">
+  <div class="report-shell">
+    <header class="report-head">
+      <div>
+        <div class="report-kicker">// INTERVIEW REPORT / 面经</div>
+        <h2 id="reportTitle">面试结果</h2>
+      </div>
+      <button id="closeReport" class="icon-btn" type="button" title="关闭">×</button>
+    </header>
+    <div class="report-scroll">
+      <div id="reportBody"></div>
+    </div>
+    <footer class="report-foot">
+      <button id="downloadReport" class="ghost-btn" type="button">下载面经 .md</button>
+      <button id="replayBtn" class="primary-btn small" type="button"><span class="btn-text">再来一局</span><span class="btn-arrow">↻</span></button>
+    </footer>
+  </div>
+</section>
+
+<!-- ============ LLM 设置 ============ -->
+<section id="settings" class="modal hidden">
+  <div class="modal-card">
+    <header class="modal-head">
+      <div>
+        <div class="modal-kicker">// MODEL UPLINK</div>
+        <h3>接入大模型</h3>
+      </div>
+      <button id="closeSettings" class="icon-btn" type="button">×</button>
+    </header>
+
+    <div class="field">
+      <label>提供商</label>
+      <div class="seg" id="providerSeg">
+        <button data-provider="local" class="active" type="button">本地引擎</button>
+        <button data-provider="openai" type="button">OpenAI 兼容</button>
+        <button data-provider="gemini" type="button">Gemini</button>
+      </div>
+    </div>
+
+    <div class="field" id="fieldBase">
+      <label>Base URL</label>
+      <input id="inBase" type="text" placeholder="https://api.deepseek.com/v1" spellcheck="false" />
+      <small>支持 DeepSeek / Moonshot / OpenAI / Ollama 等兼容接口</small>
+    </div>
+
+    <div class="field" id="fieldKey">
+      <label>API Key</label>
+      <input id="inKey" type="password" placeholder="sk-..." spellcheck="false" />
+      <small>仅保存在本机 localStorage，不会上传到任何服务器</small>
+    </div>
+
+    <div class="field" id="fieldModel">
+      <label>模型</label>
+      <input id="inModel" type="text" placeholder="deepseek-chat" spellcheck="false" />
+    </div>
+
+    <div class="field" id="fieldGeminiModel">
+      <label>Gemini 模型</label>
+      <input id="inGeminiModel" type="text" placeholder="gemini-2.0-flash" spellcheck="false" />
+    </div>
+
+    <div class="modal-status" id="settingsStatus">未连接外部模型，将使用内置题库与评分。</div>
+
+    <footer class="modal-foot">
+      <button id="testConn" class="ghost-btn" type="button">测试连接</button>
+      <button id="saveSettings" class="primary-btn small" type="button"><span class="btn-text">保存并应用</span><span class="btn-arrow">→</span></button>
+    </footer>
+  </div>
+</section>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

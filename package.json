@@ -1,0 +1,16 @@
+{
+  "name": "cyber-interview-universe",
+  "version": "1.0.0",
+  "description": "面试宇宙 / INTERVIEWVERSE — 赛博 3D 面试 Demo",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 5173"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "three": "^0.169.0"
+  }
+}
